@@ -1,6 +1,4 @@
-# Algorithm
-
-Ray Casting Algorithm
+# Ray Casting Algorithm
 
 - https://en.wikipedia.org/wiki/Point_in_polygon
 - https://wrfranklin.org/nikola/pages/index.html
