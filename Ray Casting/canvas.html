@@ -1,0 +1,201 @@
+<style type="text/css">
+canvas{
+	background: #f1f1f1;
+	border:1px solid #eeeeee;
+}
+</style>
+<canvas width="500" height="600" style="float:left;margin-right:15px;"></canvas>
+<pre id="result"></pre>
+<a href="javascript:void(0);" onclick="sifirla()">SIFIRLA</a>
+<a href="javascript:void(0);" onclick="aktar()">DEPOLA</a>
+<script type="text/javascript">
+var canvas = window.document.getElementsByTagName("canvas")[0];
+var ctx = canvas.getContext("2d");
+var W = 500;
+var H = 600;
+
+	var a = 0;
+	var b = 0;
+
+var point_array = [[0,0]];
+
+if(JSON.parse(localStorage.getItem("select_point")) != null){
+
+	for(var i = point_array.length - 1; i >= 0; i--) {
+		point_array.splice(i, 1);
+	}
+
+	point_array = JSON.parse(localStorage.getItem("select_point"));
+}
+
+var point = [W/2, H/2];
+
+canvas.onclick = function(evt){
+    point[0] = evt.pageX - canvas.getBoundingClientRect().top;
+    point[1] = evt.pageY - canvas.getBoundingClientRect().left;
+	if(localStorage.getItem("select_point") == null){
+		if(point_array[0][0] == 0 && point_array[0][1] == 0){
+			point_array.splice(0, 1);
+		}
+		point_array.push([point[0],point[1]]);
+	}
+    test();
+};
+
+test();
+
+function sifirla(){
+	localStorage.removeItem("select_point");
+	window.location.reload();
+}
+
+function aktar(){
+	localStorage.setItem("select_point", JSON.stringify(point_array));
+	window.location.reload();
+}
+
+function sign(p, p2, p3){
+	return (p[0] - p3[0]) * (p2[1] - p3[1]) - (p2[0] - p3[0]) * (p[1] - p3[1]);
+}
+
+function PointInTriangle(pt, polygon){
+	
+	var d = [];
+	var has_neg, has_pos;
+
+	a = 0;
+	b = 0;
+
+	for(var i = 0; i < polygon.length-1; i++){
+		var ss = sign(pt, polygon[i], polygon[i+1]);
+		d.push(ss);
+
+		if(ss > 0){ a++; }
+		if(ss < 0){ b++; }
+		
+	}
+	/*d1 = this.sign(pt, v1, v2);
+	d2 = this.sign(pt, v2, v3);
+	d3 = this.sign(pt, v3, v1);
+
+	has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+	has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+	return !(has_neg && has_pos);*/
+	return true;
+}
+
+function zero_death(num){
+	if(num < 0){ num = num*-1; }
+	return num;
+}
+
+function test(){
+    var result = PointInTriangle(point, point_array);
+
+    var info = "point = [" + point[0] + "," + point[1] + "]\n";
+	info += "+: "+a+"-: "+b+"\n";
+	for(var i = 0; i < point_array.length; i++){
+		info += "point_array\t["+i+"][" + point_array[i][0] + "," + point_array[i][1] + "] \t ["+zero_death(point_array[i][0]-point[0])+","+zero_death(point_array[i][1]-point[1])+"]("+(zero_death(point_array[i][0]-point[0])+zero_death(point_array[i][1]-point[1]))+")\n";
+	}
+    info += "result = " + (result ? "true" : "false");
+
+    window.document.getElementById("result").innerHTML = info;
+    render();
+}
+
+function render(){
+    ctx.fillStyle = "#CCCCCC";
+    ctx.fillRect(0, 0, 500, 600);
+    drawTriangle(point_array);
+    drawPoint(point);
+	//appendTriangle(point_array);
+	pastePoint(point_array);
+}
+
+function pastePoint(polygon){
+
+	console.log(inside([ point[0], point[1] ], polygon));
+
+	var result = [];
+	for(var i = 0; i < point_array.length; i++){
+		result.push([i,((zero_death(point_array[i][0]-point[0])+zero_death(point_array[i][1]-point[1])))]);
+	}
+	result.sort(function(a, b) {
+	  return a[1] - b[1];
+	});
+
+    ctx.beginPath();
+			ctx.moveTo(point[0], point[1]);
+
+			ctx.lineTo(point[0], point[1]);
+			ctx.lineTo(polygon[result[0][0]][0], polygon[result[0][0]][1]);
+	ctx.stroke();
+	ctx.strokeStyle = "#FF0000";
+	
+	    ctx.beginPath();
+			ctx.moveTo(point[0], point[1]);
+
+			ctx.lineTo(point[0], point[1]);
+			ctx.lineTo(polygon[result[1][0]][0], polygon[result[1][0]][1]);
+	ctx.stroke();
+	ctx.strokeStyle = "#FF0000";
+	
+}
+
+function appendTriangle(polygon){
+
+	ctx.beginPath();
+		for(var i = 0; i < (polygon.length/3)-1; i++){
+			ctx.moveTo(polygon[(i*3)+0][0], polygon[(i*3)+0][1]);
+
+			ctx.lineTo(polygon[(i*3)+0][0], polygon[(i*3)+0][1]);
+			ctx.lineTo(polygon[(i*3)+1][0], polygon[(i*3)+1][1]);
+			ctx.lineTo(polygon[(i*3)+2][0], polygon[(i*3)+2][1]);
+		}
+	ctx.stroke();
+	
+}
+
+function drawTriangle(polygon){
+	ctx.fillStyle = "white";
+	ctx.beginPath();
+	ctx.moveTo(polygon[0][0], polygon[0][1]);
+	for(var i = 0; i < polygon.length; i++){
+		ctx.lineTo(polygon[i][0], polygon[i][1]);
+	}
+	ctx.closePath();
+	ctx.fill();
+	ctx.fillStyle = "#000000";
+	ctx.font = "12px monospace";
+	for(var i = 0; i < polygon.length; i++){
+		ctx.fillText(i, polygon[i][0], polygon[i][1]);
+	}
+}
+
+function drawPoint(p){
+    ctx.fillStyle = "#F00";
+    ctx.beginPath();
+    ctx.arc(p[0], p[1], 5, 0, 2 * Math.PI);
+    ctx.fill();
+}
+
+function inside(point, vs) {
+    // ray-casting algorithm based on
+    // https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html/pnpoly.html
+    
+    var x = point[0], y = point[1];
+    
+    var inside = false;
+    for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+        var xi = vs[i][0], yi = vs[i][1];
+        var xj = vs[j][0], yj = vs[j][1];
+        
+        var intersect = ((yi > y) != (yj > y))
+            && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+    }
+    
+    return inside;
+};
+</script>
