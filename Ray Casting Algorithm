@@ -16,3 +16,7 @@ function inside(point, vs) {
     
     return inside;
 };
+
+// array of coordinates of each vertex of the polygon
+var polygon = [ [ 1, 1 ], [ 1, 2 ], [ 2, 2 ], [ 2, 1 ] ];
+inside([ 1.5, 1.5 ], polygon); // true
