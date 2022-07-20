@@ -4,3 +4,4 @@
 - https://wrfranklin.org/nikola/pages/index.html
 - https://www.eecs.umich.edu/courses/eecs380/HANDOUTS/PROJ2/InsidePoly.html
 - https://stackoverflow.com/questions/22521982/check-if-point-is-inside-a-polygon
+- https://www.algorithms-and-technologies.com/point_in_polygon/javascript
