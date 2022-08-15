@@ -6,8 +6,8 @@
 */
 var objectId = "62a89e124ecdcb6485f9dafb"; // 12-byte BSON - 4, 3, 2, 3 bytes
 
-var unix_timestamp = objectId.substring(0, 8); // 2022-06-14T14:41:22Z
-var random_value = objectId.substring(8, 14);
+var timestamp = objectId.substring(0, 8); // 2022-06-14T14:41:22Z
+var machine = objectId.substring(8, 14);
 var process = objectId.substring(14, 18);
 var count = objectId.substring(18, 24);
 
