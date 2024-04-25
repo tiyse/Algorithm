@@ -1,0 +1,38 @@
+// Vertex Inverse Bind Pose Matrices
+glm::mat4 VertexMatrixX = glm::mat4(1.000000, 0.000000, 0.000000, 0.000000, -0.000000, 1.000000, 0.000000, 0.000000, -0.000000, -0.000000, 1.000000, 0.000000, 0.000000, 0.000001, 0.600000, 1.000000);
+glm::mat4 VertexMatrixY = glm::mat4(0.999305, 0.015203, -0.034047, 0.000000, -0.010069, 0.989208, 0.146170, 0.000000, 0.035902, -0.145725, 0.988673, 0.000000, -0.169357, 0.682461, 0.667138, 1.000000);
+glm::mat4 VertexMatrixZ = glm::mat4(0.897529, -0.008025, -0.440882, 0.000000, 0.407548, 0.396847, 0.822446, 0.000000, 0.168363, -0.917850, 0.359452, 0.000000, -0.848836, 4.982914, 4.385425, 1.000000);
+glm::mat4 VertexMatrixW = glm::mat4(1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.460047, -0.887888, 0.000000, -0.000001, 0.887899, 0.460051, 0.000000, 0.000002, -2.799553, 2.429250, 1.000000);
+
+// Vertex Weight
+float VertexWeightX = 0.433432f;
+float VertexWeightY = 0.0351347f;
+float VertexWeightZ = 0.0679031f;
+float VertexWeightW = 0.41341f;
+
+// Weight Normalize
+float total = VertexWeightX + VertexWeightY + VertexWeightZ + VertexWeightW;
+VertexWeightX = VertexWeightX / total;
+VertexWeightY = VertexWeightY / total;
+VertexWeightZ = VertexWeightZ / total;
+VertexWeightW = VertexWeightW / total;
+
+// Vertex
+glm::vec4 Vertex = glm::vec4(0.767205, 0.403899, 3.634626, 1.000000);
+
+// ---------- Result Formule First
+//// (Matrix * Vertex) * Weight
+//glm::vec4 totalPosition = glm::vec4(0.0f);
+//totalPosition += (VertexMatrixX * Vertex) * VertexWeightX;
+//totalPosition += (VertexMatrixY * Vertex) * VertexWeightY;
+//totalPosition += (VertexMatrixZ * Vertex) * VertexWeightZ;
+//totalPosition += (VertexMatrixW * Vertex) * VertexWeightW;
+//std::cout << glm::to_string(totalPosition) << std::endl;
+
+// ---------- Result Formule Second
+// Matrix * Weight
+glm::mat4 BoneTransform = VertexMatrixX * VertexWeightX;
+BoneTransform += VertexMatrixY * VertexWeightY;
+BoneTransform += VertexMatrixZ * VertexWeightZ;
+BoneTransform += VertexMatrixW * VertexWeightW;
+std::cout << glm::to_string(BoneTransform * Vertex) << std::endl;
